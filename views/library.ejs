@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library</title>
+    <style>
+      /* Basic styling for book display */
+      .library {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .book {
+        border: 1px solid #ddd;
+        padding: 10px;
+        max-width: 200px;
+        text-align: center;
+      }
+      .book img {
+        width: 150px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Library</h1>
+    <div class="library">
+      <% books?.forEach(book => { %>
+      <div class="book">
+        <img src="<%= book.image_url %>" alt="<%= book.title %>" />
+        <h3><%= book.title %></h3>
+        <p>by <%= book.author %></p>
+        <form action="/reading-list" method="post">
+            <input type="text" name="bookId" value="<%= book?.id %>" >
+            <button type="submit">Add to your reading List</button>
+          </form>
+      </div>
+      <% }); %>
+    </div>
+  </body>
+</html>

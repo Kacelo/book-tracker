@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="/search" method="post">
+      <input
+        type="text"
+        name="book"
+        autofocus
+        placeholder="<%= locals.error ? error :  'Search Book Name'%>"
+      />
+      <button type="submit" style="background-color: blue">Search</button>
+    </form>
+    <div>
+        <a as="button" href="/library" >view library</a>
+    </div>
+    <section>
+      <div class="book-list">
+        <% books.forEach(book => { %>
+        <div class="book-item">
+          <img
+            src="https://covers.openlibrary.org/b/id/<%= book?.cover_i %>-M.jpg"
+            alt="<%= book?.title %>"
+            width="150"
+            height="200"
+          />
+          <h3><%= book?.title %></h3>
+          by: <% book?.author_name?.forEach(author=>{ %>
+          <p> <%= author %></p>
+          <% }); %>
+          <form action="/add" method="post">
+            <input type="text" name="book" value="<%= book?.title %>" >
+            <button type="submit">Add to List</button>
+          </form>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+  </body>
+</html>
