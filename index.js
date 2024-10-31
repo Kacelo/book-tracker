@@ -115,7 +115,13 @@ app.post("/reading-list", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-app.get("/")
+app.get("/", (req, res)=>{
+    try {
+        // const result =  await db.query
+    } catch (error) {
+        
+    }
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
