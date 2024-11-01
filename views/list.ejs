@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <style>
+      /* Basic styling for book display */
+      .library {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .book {
+        border: 1px solid #ddd;
+        padding: 10px;
+        max-width: 200px;
+        text-align: center;
+      }
+      .book img {
+        width: 150px;
+        height: auto;
+      }
+      .checked {
+        color: orange;
+      }
+    </style>
+    <script>
+      function showReviewForm(bookID) {
+        console.log(bookID);
+        document.getElementById(bookID).style.display = "block";
+        document.getElementById(`${bookID}-review-btn`).style.display = "none";
+
+        document.getElementById(`${bookID}-disgard-btn`).style.display =
+          "block";
+      }
+      function hideReviewForm(bookID) {
+        document.getElementById(bookID).style.display = "none";
+        document.getElementById(`${bookID}-review-btn`).style.display = "block";
+
+        document.getElementById(`${bookID}-disgard-btn`).style.display = "none";
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Welcome to your reading list</h1>
+    <div class="library">
+      <% books?.forEach(book => { %>
+      <div class="book">
+        <img src="<%= book.image_url %>" alt="<%= book.book_title %>" />
+        <h3><%= book.book_title %></h3>
+        <p>by <%= book.author %></p>
+
+        <p>Review: <%=book?.review %></p>
+        <!-- <form action="/reading-list" method="post">
+          <input
+            type="text"
+            name="bookId"
+            value="<%= book?.id %>"
+            style="display: none"
+          />
+          <button type="submit">Add to your reading List</button>
+        </form> -->
+
+        <button
+          type="submit"
+          onclick="return showReviewForm('<%= book?.id %>' )"
+          id="<%= book.id %>-review-btn"
+          style="display: block"
+        >
+          Review This Book
+        </button>
+        <button
+          onclick="return hideReviewForm('<%= book?.id %>' )"
+          id="<%= book.id %>-disgard-btn"
+          style="display: none"
+        >
+          disgard
+        </button>
+        <form
+          action="/add-review"
+          method="post"
+          id="<%= book.id %>"
+          style="display: none"
+        >
+          <input
+            type="text"
+            name="bookId"
+            value="<%= book?.book_id %>"
+            style="display: none"
+          />
+          <label for="review">describe book</label>
+
+          <textarea name="review" id="review"></textarea>
+          <label for="rating">select star rating</label>
+          <select name="rating" id="stars">
+            <option value="1">1</option>
+            <option value="2">2</span></option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+<div>        
+    <button type="submit">Save</button>
+</div>
+        </form>
+        <div>
+          <% for (let i = 1; i <= 5; i++) { %>
+            <span class="fa fa-star <%= i <= book.rating ? 'checked' : '' %>"></span>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </body>
+</html>

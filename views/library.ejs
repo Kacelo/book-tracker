@@ -32,8 +32,8 @@
         <h3><%= book.title %></h3>
         <p>by <%= book.author %></p>
         <form action="/reading-list" method="post">
-            <input type="text" name="bookId" value="<%= book?.id %>" >
-            <button type="submit">Add to your reading List</button>
+          <input type="text" name="bookId" value="<%= book?.id %>" style="display: none;" >
+          <button type="submit">Add to your reading List</button>
           </form>
       </div>
       <% }); %>

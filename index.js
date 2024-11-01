@@ -18,10 +18,17 @@ db.connect();
 let books = [];
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+let currentUserId = 1;
 
 app.get("/", async (req, res) => {
   //   res.send("Hello World!");
-  res.render("index.ejs", { books });
+  try {
+    const userQuery = await db.query("SELECT * FROM users");
+    res.render("index.ejs", { books, users: userQuery.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 const setBookDetails = (books) => {
   //   const returnedBooks = books.docs;
@@ -103,25 +110,69 @@ app.get("/library", async (req, res) => {
 });
 app.post("/reading-list", async (req, res) => {
   const bookId = req.body["bookId"];
-  const user_id = 1;
+  const user_id = 2;
+  console.log(currentUserId);
   try {
-    const result = await db.query(
+    await db.query(
       "INSERT INTO reading_list (user_id, book_id) VALUES($1, $2) RETURNING *;",
-      [user_id, bookId]
+      [currentUserId, bookId]
     );
-    console.log(result);
+    res.redirect("/reading-list-view");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-app.get("/", (req, res)=>{
-    try {
-        // const result =  await db.query
-    } catch (error) {
-        
-    }
-})
+app.post("/user", async (req, res) => {
+  if (req.body.add === "new") {
+    res.render("new.ejs");
+  } else {
+    currentUserId = req.body.user;
+    res.redirect("/");
+  }
+});
+app.get("/reading-list-view", async (req, res) => {
+  const userID = 2;
+  console.log("current user", currentUserId);
+
+  try {
+    const books = await db.query(
+      `SELECT * 
+        FROM books b RIGHT JOIN
+          reading_list r
+          ON b.id = r.book_id
+          WHERE user_id = ${currentUserId}
+        GROUP BY b.id, r.id`
+    );
+    console.log("books", books.rows);
+    res.render("list.ejs", { books: books.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+app.post("/add-review", async (req, res) => {
+  const reviewV = req.body["review"];
+  const rating = req.body["rating"];
+  const bookId = req.body["bookId"];
+
+  console.log("Review:", reviewV, "Rating:", rating, "Book ID:", bookId, "User ID:", currentUserId);
+  
+  try {
+    const query = await db.query(
+      'UPDATE reading_list SET review = $1, rating = $2 WHERE user_id = $3 AND book_id = $4',
+      [reviewV, rating, currentUserId, bookId]
+    );
+
+    console.log("Update Query Result:", query);
+    res.redirect("/reading-list-view");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

@@ -4,9 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script>
+      function validateForm() {
+        let x = document.forms["myForm"]["book"].value;
+        if (x == "") {
+          alert("Search must be filled out");
+          return false;
+        }
+      }
+    </script>
   </head>
   <body>
-    <form action="/search" method="post">
+    <form class="tab-view tab-view-height-auto" action="/user" method="post" >
+      <% users.forEach(function(user) { %>
+        <input type="submit" name="user" value="<%= user.user_id %>" id="<%= user.user_id %>">
+        <label for="<%= user.user_id %>" style="background-color: <%= user.color %>;">
+          <%= user.username %>
+        </label>
+        <% }); %>
+  
+          <input type="submit" name="add" value="new" id="tab">
+          <label for="tab">Add Family Member</label>
+  
+    </form>
+    <form action="/search" name ="myForm" method="post" onsubmit="return validateForm()">
       <input
         type="text"
         name="book"
@@ -18,6 +39,9 @@
     <div>
         <a as="button" href="/library" >view library</a>
     </div>
+    <div>
+      <a as="button" href="/reading-list-view" >view reading list</a>
+  </div>
     <section>
       <div class="book-list">
         <% books.forEach(book => { %>
@@ -33,12 +57,14 @@
           <p> <%= author %></p>
           <% }); %>
           <form action="/add" method="post">
-            <input type="text" name="book" value="<%= book?.title %>" >
+            <input type="text" name="book" value="<%= book?.title %>" style="display: none;">
             <button type="submit">Add to List</button>
           </form>
         </div>
         <% }); %>
       </div>
     </section>
+    
   </body>
 </html>
+
